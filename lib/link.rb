@@ -1,3 +1,5 @@
+require 'date'
+
 class Link < Post
   def initialize
   super
@@ -5,7 +7,7 @@ class Link < Post
     @url = ''
   end
 
-  def read_from_consloe
+  def read_from_console
     puts 'Адрес ссылки:'
     @url = STDIN.gets.chomp
 
@@ -14,8 +16,23 @@ class Link < Post
   end
 
   def to_strings
-    time_string = "Создано: #{@created_at.strftime("%Y.%m.%d, %H:%M:%S")} \n\r\n\r"
+    time_string = "Создано: #{@created_at.strftime("%Y.%m.%d, %H:%M:%S").encode("UTF-8")} \n\r\n\r"
 
     [time_string, @url, @text]
+  end
+
+  def to_db_hash
+    return super.merge(
+      {
+        'text' => @text,
+        'url' => @url
+      }
+    )
+  end
+
+  def load_data(data_hash)
+    super(data_hash)
+
+    @text = data_hash['url']
   end
 end
